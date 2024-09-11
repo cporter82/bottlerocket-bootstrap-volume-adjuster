@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Retrieve instance metadata using the imds command and populate environment variables
-export INSTANCE_ID=$(imds /latest/meta-data/instance-id)
-export AMI_ID=$(imds /latest/meta-data/ami-id)
-export REGION=$(imds /latest/dynamic/instance-identity/document | jq -r .region)
+INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+AMI_ID=$(curl -s http://169.254.169.254/latest/meta-data/ami-id)
+REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
 
 # Check if the AMI is a Bottlerocket image
 IS_BOTTLEROCKET=$(aws ec2 describe-images --image-ids $AMI_ID \
